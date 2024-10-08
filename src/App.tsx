@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import 'normalize.css';
-import { Layout, Menu } from 'antd';
+import { Flex, Layout, Menu } from 'antd';
 import {
   ProductOutlined,
   RocketOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import Logo from './assets/Roulette.svg';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -44,11 +45,32 @@ const App: React.FC = () => {
         </Menu>
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }}>
-            <Link to="/">
-              <img alt="Logo" style={{ cursor: 'pointer' }}/>
-            </Link>
-          </Header>
+        <Header style={{ background: '#fff', padding: 0, display: 'flex', justifyContent: 'flex-start'}}>
+          <Link to="/">
+            <img src={Logo} alt="ロゴ" style={{ height: '50px', cursor: 'pointer', marginLeft: '15px', marginTop: '1vh', maxWidth: '100%', maxHeight: 'auto' }}/>
+          </Link>
+
+          <style>{`
+            @media (max-width: 760px) {
+              Header {
+                height: 56px;
+              }
+              img {
+                height: 40px;
+                marginTop: '0.5vh';
+              }
+            }
+            @media (max-width: 480px) {
+              Header {
+                height: 48px;
+              }
+              img {
+                height: 30px;
+                marginTop: '0.3vh';
+              }
+            }
+          `}</style>
+        </Header>
         <Content style={{ margin: '24px 16px 0', background: '#fff' }}>
           Content
         </Content>
