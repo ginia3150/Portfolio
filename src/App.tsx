@@ -6,6 +6,7 @@ import {
   RocketOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -43,7 +44,11 @@ const App: React.FC = () => {
         </Menu>
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }}>Header</Header>
+        <Header style={{ background: '#fff', padding: 0 }}>
+            <Link to="/">
+              <img alt="Logo" style={{ cursor: 'pointer' }}/>
+            </Link>
+          </Header>
         <Content style={{ margin: '24px 16px 0', background: '#fff' }}>
           Content
         </Content>
