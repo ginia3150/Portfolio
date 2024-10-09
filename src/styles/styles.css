@@ -1,0 +1,40 @@
+/* 共通スタイル */
+
+/* スクロールバーの非表示 */
+body {
+    overflow: hidden; /* ページ全体のスクロールバーを非表示に */
+}
+
+div {
+    overflow: hidden; /* 特定の要素のオーバーフローを非表示に */
+}
+
+.icon {
+    font-size: 24px; /* アイコンサイズ */
+    cursor: pointer; /* カーソルポインター */
+    display: flex;
+    justify-content: center; /* 中央揃え */
+    align-items: center; /* 中央揃え */
+  }
+  
+  .header {
+    background: #fff;
+    padding: 0;
+    display: flex;
+    justify-content: space-between; /* 両端揃え */
+    align-items: center; /* 垂直中央揃え */
+  }
+  
+  .footer {
+    background: #fff;
+    text-align: center; /* 中央揃え */
+  }
+  
+  .footer-menu {
+    justify-content: center; /* メニューアイテムを中央に */
+  }
+  
+  .footer-copy {
+    margin-top: 20px; /* 上部マージン */
+  }
+  
