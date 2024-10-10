@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IdcardOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 
-const HeaderWithPopconfirm: React.FC = () => {
-    const navigate = useNavigate();
+interface HeaderWithPopconfirmProps {
+    navigate: (path: string) => void;
+}
+
+const HeaderWithPopconfirm: React.FC<HeaderWithPopconfirmProps> = ({ navigate }) => {
     const [visible, setVisible] = useState(false);
 
     const showPopconfirm = () => {
