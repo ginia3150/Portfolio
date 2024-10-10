@@ -1,49 +1,43 @@
 import { useState } from "react";
 import { IdcardOutlined } from "@ant-design/icons";
-import { Popconfirm } from "antd";
+import { Tooltip } from "antd";
 
-interface HeaderWithPopconfirmProps {
+interface HeaderWithTooltipProps {
     navigate: (path: string) => void;
 }
 
-const HeaderWithPopconfirm: React.FC<HeaderWithPopconfirmProps> = ({ navigate }) => {
+const HeaderWithTooltip: React.FC<HeaderWithTooltipProps> = ({ navigate }) => {
     const [visible, setVisible] = useState(false);
 
-    const showPopconfirm = () => {
+    const showTooltip = () => {
         setVisible(true);
     };
 
-    const handleConfirm = () => {
+    const hideTooltip = () => {
+        setVisible(false);
+    }
+
+    const handleTooltip = () => {
         setVisible(false);
         navigate("/profile");
     };
 
-    const headleCancel = () => {
-        setVisible(false);
-    };
-
-    const handleMouseLeave = () => {
-        setVisible(false);
-    }
-
     return (
-        <div onMouseLeave={handleMouseLeave}>
-            <Popconfirm
-                title="プロフィールページに移動しますか？"
+        <div onMouseLeave={hideTooltip}>
+            <Tooltip
+                title="プロフィールに移動しますか？"
                 open={visible}
-                onConfirm={handleConfirm}
-                onCancel={headleCancel}
-                okText="はい"
-                cancelText="いいえ"
+                color="lime"
             >
                 <IdcardOutlined
                     className="icon"
                     style={{ marginRight: '15px' }}
-                    onMouseEnter={showPopconfirm}
+                    onMouseEnter={showTooltip}
+                    onClick={handleTooltip}
                 />
-            </Popconfirm>
+            </Tooltip>
         </div>
     );
 };
 
-export default HeaderWithPopconfirm;
+export default HeaderWithTooltip;
