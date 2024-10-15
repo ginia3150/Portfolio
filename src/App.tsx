@@ -12,6 +12,7 @@ import { Link, BrowserRouter as Router, Route, Routes, useNavigate, useLocation 
 import Logo from "./assets/Roulette.svg";
 import HeaderWithPopconfirm from "./components/HeaderWithPopconfirm";
 import Roulette from "./components/Roulette/Roulette";
+import RouletteEditor from "./components/Roulette/RouletteEditor";
 import Home from "./components/Home";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(true);
+  const [items, setItems] = useState<string[]>([]);
 
   const handleMouseEnter = () => {
     setCollapsed(false);
@@ -28,6 +30,10 @@ const App: React.FC = () => {
   const handleMouseLeave = () => {
     setCollapsed(true);
   };
+
+  const handeleAddItems = (newItems: string[]) => {
+    setItems(newItems);
+  }
 
   const currentPath = location.pathname.split("/").filter(i => i);
 
@@ -91,9 +97,19 @@ const App: React.FC = () => {
 
           <Content style={{ background: "#fff", margin: "24px 16px 0" }}>
             <Breadcrumb style={{ margin: "16px 0 0 20px" }} items={breadcrumbItems} />
+
             <Routes>
+              <Route path="/" element={<Home />}></Route>
               <Route path="/home" element={<Home />} />
-              <Route path="/roulette" element={<Roulette />} />
+              <Route
+                path="/roulette" 
+                element={
+                  <div style={{ padding: "24px", display: "flex", gap: "28px", flexDirection: "column" }}>
+                  <RouletteEditor onAddItems={handeleAddItems}/>
+                  <Roulette items={items}/>
+                </div>
+                }
+              />
               <Route path="" />
               <Route path="" />
             </Routes>
