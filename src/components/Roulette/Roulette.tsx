@@ -45,21 +45,24 @@ const Roulette: React.FC<RouletteProps> = ({ items }) => {
             }}
             onClick={startSpin}
         >
-            {items.map((item, index) => (
-                <div
+            {items.map((item, index) => {
+                const angle = (360 / items.length) * index;
+                return (
+                    <div
                     key={index}
                     style={{
                         position: "absolute",
-                        transform: `rotate(${(360 / items.length) * index}deg)`, 
-                        transformOrigin: "50% 100%",
+                        transform: `rotate(${angle}deg) translateY(-125px) rotate(${90}deg)`, 
+                        transformOrigin: "50% 50%",
                         textAlign: "center",
                         width: "100%",
-                        top: "50%",
+                        top: "47%",
                     }}
                 >
-                    {item}
+                    <div style={{ whiteSpace: "nowrap" }}>{item}</div>
                 </div>
-            ))}
+                );
+            })}
         </animated.div>
 
         <Button
