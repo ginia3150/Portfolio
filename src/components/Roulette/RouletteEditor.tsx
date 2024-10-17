@@ -63,7 +63,7 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
         const itemToDisplay = savedItems.length > 0 ? savedItems : intialItems;
 
         setItemList(itemToDisplay);
-        onAddItems(itemToDisplay)
+        onAddItems(itemToDisplay);
     }, [onAddItems]);
 
     const handleAddOrUpdateItem = () => {
