@@ -52,11 +52,14 @@ const Roulette: React.FC<RouletteProps> = ({ items }) => {
                     key={index}
                     style={{
                         position: "absolute",
-                        transform: `rotate(${angle}deg) translateY(-125px) rotate(${90}deg)`, 
+                        transform: `rotate(${angle}deg) translateY(-100px) rotate(${270}deg)`, 
                         transformOrigin: "50% 50%",
-                        textAlign: "center",
+                        textAlign: "left",
                         width: "100%",
-                        top: "47%",
+                        top: "50%",
+                        display: "flex",
+                        justifyContent: "center",
+                        textOverflow: "ellipsis",
                     }}
                 >
                     <div style={{ whiteSpace: "nowrap" }}>{item}</div>

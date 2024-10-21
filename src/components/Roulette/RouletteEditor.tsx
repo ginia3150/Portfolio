@@ -1,9 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Input, List, Form, InputRef, Button, Modal } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Input, List, Form, InputRef, Button, Modal, Checkbox } from "antd";
+import { PlusOutlined, ReloadOutlined, CheckOutlined } from "@ant-design/icons";
+import { update } from "@react-spring/web";
+
+interface Item {
+    name: string;
+    count?: number;
+    time?: number;
+    checked?: boolean;
+}
 
 interface RouletteEditorProps {
-    onAddItems: (items: { name: string; count?: number | null; time?: number | null }[]) => void;
+    onAddItems: (items: Item[]) => void;
 }
 
 const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
@@ -11,7 +19,7 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
     const [inputValue, setInputValue] = useState("");
     const [countValue, setCountValue] = useState<number | null>(null);
     const [timeValue, setTimeValue] = useState<number | null>(null);
-    const [itemList, setItemList] = useState<{ name: string; count?: number | null; time?: number | null }[]>([]);
+    const [itemList, setItemList] = useState<Item[]>([]);
 
     const inputRef = useRef<InputRef>(null);
     const countRef = useRef<InputRef>(null);
@@ -22,6 +30,11 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
     };
 
     const handleOk = () => {
+
+        if (!inputValue.trim()) {
+            setIsModalOpen(false);
+            return;
+        }
         handleAddOrUpdateItem();
         setIsModalOpen(false);
     };
@@ -36,11 +49,12 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
 
     const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
-        setCountValue(isNaN(value) ? null : value);
+        setCountValue(value);
     };
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTimeValue(Number(e.target.value) || null);
+        const value = Number(e.target.value)
+        setTimeValue(value);
     };
 
     const saveToLocalStorage = (items: any[]) => {
@@ -51,6 +65,14 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
         const savedItems = localStorage.getItem("rouletteItems");
         return savedItems ? JSON.parse(savedItems) : [];
     };
+
+    useEffect(() => {
+        if (isModalOpen) {
+            setInputValue("");
+            setCountValue(null);
+            setTimeValue(null);
+        }
+    }, [isModalOpen]);
 
     useEffect(() => {
         const intialItems = [
@@ -64,12 +86,17 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
 
         setItemList(itemToDisplay);
         onAddItems(itemToDisplay);
-    }, [onAddItems]);
+    }, []);
 
     const handleAddOrUpdateItem = () => {
+
+        if (!inputValue.trim()) {
+            return;
+        }
+
         const newItem = inputValue.includes("プランク")
-            ? { name: inputValue.trim(), time: timeValue }
-            : { name: inputValue.trim(), count: countValue };
+            ? { name: inputValue.trim(), time: timeValue ?? 0 }
+            : { name: inputValue.trim(), count: countValue ?? 0 };
 
         const updatedItems = [...itemList, newItem];
         setItemList(updatedItems);
@@ -99,7 +126,7 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
         }
     };
 
-    const handleEditItem = (index: number, field: string, value: any) => {
+    const handleEditItem = (index: number, field: keyof Item, value: number | string) => {
         const updatedItems = itemList.map((item, i) => {
             if (i === index) {
                 return { ...item, [field]: value };
@@ -109,6 +136,29 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
         setItemList(updatedItems);
         onAddItems(updatedItems);
         saveToLocalStorage(updatedItems);
+    };
+
+    const handleCheckboxChange = (index: number) => {
+        const updatedItems = itemList.map((item, i) => {
+            if (i === index) {
+                return { ...item, checked: !item.checked };
+            }
+            return item;
+        });
+        setItemList(updatedItems);
+    };
+
+    const handleResetChecked = () => {
+        const updatedItems = itemList.filter(item => !item.checked);
+        setItemList(updatedItems);
+        onAddItems(updatedItems);
+        saveToLocalStorage(updatedItems);
+    }
+
+    const handleSelectAll = () => {
+        const allChecked = itemList.every(item => item.checked);
+        const updatedItems = itemList.map(item => ({ ...item, checked: !allChecked }));
+        setItemList(updatedItems);
     };
 
     return (
@@ -157,6 +207,14 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
                         </div>
                     </Form.Item>
 
+                    <Button type="default" onClick={handleSelectAll} style={{ marginRight: 8 }}>
+                        <CheckOutlined />全選択
+                    </Button>
+
+                    <Button type="default" onClick={handleResetChecked} style={{ marginBottom: 16 }}>
+                            <ReloadOutlined />初期化
+                    </Button>
+
                     <List
                         header={<div>ルーレット項目リスト</div>}
                         bordered
@@ -164,16 +222,20 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
                         renderItem={(item, index) => (
                             <List.Item key={index}>
                                 <div style={{ display: "flex", gap: "10px" }}>
+                                    <Checkbox
+                                        checked={item.checked}
+                                        onChange={() => handleCheckboxChange(index)}
+                                    />
                                     <Input
                                         value={item.name}
                                         onChange={(e) => handleEditItem(index, "name", e.target.value)}
                                         style={{ width: "150px" }}
                                     />
-                                    {item.time !== null && item.time !== undefined ? (
+                                    {item.time !== undefined ? (
                                             <Input.Group compact>
                                                 <Input
                                                     type="number"
-                                                    value={item.time !== null ? item.time : ""}
+                                                    value={item.time !== undefined ? item.time : ""}
                                                     onChange={(e) => handleEditItem(index, "time", Number(e.target.value))}
                                                     style={{ width: "80px" }}
                                                 />
@@ -183,7 +245,7 @@ const RouletteEditor: React.FC<RouletteEditorProps> = ({ onAddItems }) => {
                                             <Input.Group compact>
                                                 <Input
                                                     type="number"
-                                                    value={item.count !== null ? item.count : ""}
+                                                    value={item.count !== undefined ? item.count : ""}
                                                     onChange={(e) => handleEditItem(index, "count", Number(e.target.value))}
                                                     style={{ width: "80px" }}
                                                 />

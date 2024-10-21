@@ -31,8 +31,9 @@ const App: React.FC = () => {
     setCollapsed(true);
   };
 
-  const handeleAddItems = (newItems: string[]) => {
-    setItems(newItems);
+  const handeleAddItems = (newItems: any[]) => {
+    const stringItems = newItems.map(item => item.name);
+    setItems(stringItems);
   }
 
   const currentPath = location.pathname.split("/").filter(i => i);
@@ -40,13 +41,13 @@ const App: React.FC = () => {
   const breadcrumbItems = [
     {
       href: "/home",
-      title: <Link to="/home"><HomeOutlined /></Link>,
+      title: <HomeOutlined />,
     },
     ...currentPath.map((_, index) => {
       const url = "/${currentPath.slice(0, index + 1).join('/')}";
       return {
         href: url,
-        title: <Link to={url}>{currentPath[index]}</Link>,
+        title: currentPath[index],
       };
     })
   ];
@@ -99,7 +100,7 @@ const App: React.FC = () => {
             <Breadcrumb style={{ margin: "16px 0 0 20px" }} items={breadcrumbItems} />
 
             <Routes>
-              <Route path="/" element={<Home />}></Route>
+              <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
               <Route
                 path="/roulette" 
